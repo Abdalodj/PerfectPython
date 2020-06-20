@@ -1,4 +1,4 @@
-# Use shebang line if you are in a Unix system
+#! /usr/bin/env python3
 # coding: utf-8
 
 
