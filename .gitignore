@@ -1,4 +1,4 @@
 data/syseron.xml/
 env
-analysis/__pychach__
+analysis/__pycache__/
 analysis/__init__.py
