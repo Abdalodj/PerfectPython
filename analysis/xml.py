@@ -4,23 +4,21 @@
 import os
 import logging as lg
 
-
-lg.basicConfig(level=lg.DEBUG)
-
 def launch_analysis(data_file):
-    directory = os.path.dirname(os.path.dirname(__file__))
-    path_to_file = os.path.join(directory, "data", data_file)
+    path_to_file = os.path.join("data", data_file)
+
+    file_name = os.path.basename(path_to_file)
+    directory = os.path.dirname(path_to_file)
+    lg.info("Opening data file {} from directory '{}'".format(file_name,directory))
+
     try:
-        with open(path_to_file, 'r') as file:
-            preview = file.readline()
-        lg.debug(f"Yeah! We managed to read the file. Here is a preview \n{preview}")
+        with open(path_to_file,"r") as f:
+            preview = f.readline()
+            lg.debug("Yeah! We managed to read the file. Here is a preview: {%s}" % preview)
     except FileNotFoundError as e:
-        lg.critical(f'Ow :( The file was not found.\we catched {e}')
+        lg.critical("Ow :( The file was not found. Here is the original message of the exception : {%s}" % e)
+    except:
+        lg.critical('Destination unknown')
 
-
-def main():
-    launch_analysis('SyceronBrut.xml')
-
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    launch_analysis("SyceronBrut.xml")
