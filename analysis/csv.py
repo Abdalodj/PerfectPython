@@ -16,7 +16,7 @@ AGE_COLUMN_NAME = "age"
 AGE_YEARS_COLUMN_NAME = "age_in_years"
 BIRTH_COLUMN_NAME = "birth"
 
-MINIMUM_MP_AGE = 18
+MINIMUM_MP_AGE = 18 
 
 
 class SetOfParliamentMember:
