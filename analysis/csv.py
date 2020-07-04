@@ -6,14 +6,13 @@ import pprint
 import datetime as dt
 
 import pandas as pd
-import matplotlib
-matplotlib.use('TkAgg') # you need this if you are on MacOS
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-AGE_COLUMN_NAME = "age"                 # Name of the new column (containing the age of the MP)
-                                        # to create in the dataframe
+# Name of the new column (containing the age of the MP)
+AGE_COLUMN_NAME = "age"
+# to create in the dataframe
 AGE_YEARS_COLUMN_NAME = "age_in_years"
 BIRTH_COLUMN_NAME = "birth"
 
@@ -21,7 +20,7 @@ MINIMUM_MP_AGE = 18
 
 
 class SetOfParliamentMember:
-    ALL_REGISTERED_PARTIES = [] # This is a class attribute
+    ALL_REGISTERED_PARTIES = []  # This is a class attribute
 
     def __init__(self, name):
         self.name = name
@@ -46,15 +45,16 @@ class SetOfParliamentMember:
         nb_mps = counts.sum()
         proportions = counts / nb_mps
 
-        labels = ["Female ({})".format(counts[0]), "Male ({})".format(counts[1])]
+        labels = ["Female ({})".format(counts[0]),
+                  "Male ({})".format(counts[1])]
 
         fig, ax = plt.subplots()
         ax.axis("equal")
         ax.pie(
-                proportions,
-                labels=labels,
-                autopct="%1.1f%%"
-                )
+            proportions,
+            labels=labels,
+            autopct="%1.1f%%"
+        )
         plt.title("{} ({} MPs)".format(self.name, nb_mps))
         plt.show()
 
@@ -62,7 +62,8 @@ class SetOfParliamentMember:
         result = {}
         data = self.dataframe
 
-        # These 2 syntaxes are equivalent : data.parti_ratt_financier and data['parti_ratt_financier']
+        # These 2 syntaxes are equivalent : data.parti_ratt_financier and
+        # data['parti_ratt_financier']
         all_parties = data["parti_ratt_financier"].dropna().unique()
 
         for party in all_parties:
@@ -74,10 +75,10 @@ class SetOfParliamentMember:
         return result
 
     def __str__(self):
-        names = [] ## todo: remplacer à la fin par une compréhension
-        for row_index, mp in self.dataframe.iterrows(): ##todo: ici il y a du packing/unpacking
+        names = []  # todo: remplacer à la fin par une compréhension
+        for row_index, mp in self.dataframe.iterrows():  # todo: ici il y a du packing/unpacking
             names += [mp.nom]
-        return str(names) # Python knows how to convert a list into a string
+        return str(names)  # Python knows how to convert a list into a string
 
     def __repr__(self):
         return "Set of {} MPs".format(len(self.dataframe))
@@ -95,16 +96,19 @@ class SetOfParliamentMember:
             if index < 0:
                 raise Exception("Please select a positive index")
             elif index >= len(self.dataframe):
-                raise Exception("There are only {} MPs!".format(len(self.dataframe)))
+                raise Exception(
+                    "There are only {} MPs!".format(len(self.dataframe)))
             else:
                 raise Exception("Wrong index")
         return result
 
     def __add__(self, other):
         if not isinstance(other, SetOfParliamentMember):
-            raise Exception("Can not add a SetOfParliamentMember with an object of type {}".format(type(other)))
+            raise Exception(
+                "Can not add a SetOfParliamentMember with an object of type {}".format(type(other)))
 
-        df1, df2 = self.dataframe, other.dataframe ##todo: ici il y a du packing/unpacking
+        # todo: ici il y a du packing/unpacking
+        df1, df2 = self.dataframe, other.dataframe
         df = df1.append(df2)
         df = df.drop_duplicates()
 
@@ -112,7 +116,9 @@ class SetOfParliamentMember:
         s.data_from_dataframe(df)
         return s
 
-    def __radd__(self, other): ## todo: l'implementation de cette méthode ne suit à mon avis pas les bonnes pratiques
+    # todo: l'implementation de cette méthode ne suit à mon avis pas les
+    # bonnes pratiques
+    def __radd__(self, other):
         return self
 
     def __lt__(self, other):
@@ -121,8 +127,8 @@ class SetOfParliamentMember:
     def __gt__(self, other):
         return self.number_of_mps > other.number_of_mps
 
-    ## todo: Attention ici, supprimer les anciennes méthodes __getattr__ et __setattr__ pour qu'elles n'interfèrent pas
-    ## avec @property
+    # todo: Attention ici, supprimer les anciennes méthodes __getattr__ et __setattr__ pour qu'elles n'interfèrent pas
+    # avec @property
 
     @property
     def number_of_mps(self):
@@ -134,7 +140,8 @@ class SetOfParliamentMember:
 
     @classmethod
     def _register_parties(cl, parties):
-        cl.ALL_REGISTERED_PARTIES = cl._group_two_lists_of_parties(cl.ALL_REGISTERED_PARTIES, list(parties))
+        cl.ALL_REGISTERED_PARTIES = cl._group_two_lists_of_parties(
+            cl.ALL_REGISTERED_PARTIES, list(parties))
 
     @classmethod
     def get_all_registered_parties(cl):
@@ -142,7 +149,8 @@ class SetOfParliamentMember:
 
     @staticmethod
     def _group_two_lists_of_parties(original, new):
-        return list(set(original + new)) # This line drop duplicates in the list 'original + new'
+        # This line drop duplicates in the list 'original + new'
+        return list(set(original + new))
 
     def number_mp_by_party(self):
         data = self.dataframe
@@ -157,7 +165,7 @@ class SetOfParliamentMember:
     @staticmethod
     def display_histogram(values):
         fig, ax = plt.subplots()
-        ax.hist(values, bins = 20)
+        ax.hist(values, bins=20)
         plt.title("Ages ({} MPs)".format(len(values)))
         plt.show()
 
@@ -169,12 +177,15 @@ class SetOfParliamentMember:
         # We first have to convert this to a column of type datetime.
         if not BIRTH_COLUMN_NAME in data.columns:
             data[BIRTH_COLUMN_NAME] = \
-                data["date_naissance"].apply(lambda string: dt.datetime.strptime(string,"%Y-%m-%d"))
+                data["date_naissance"].apply(
+                    lambda string: dt.datetime.strptime(string, "%Y-%m-%d"))
 
         if not AGE_COLUMN_NAME in data.columns:
-            data[AGE_COLUMN_NAME] = data[BIRTH_COLUMN_NAME].apply(lambda date: now-date)
+            data[AGE_COLUMN_NAME] = data[
+                BIRTH_COLUMN_NAME].apply(lambda date: now - date)
 
-        # Here is an other way to fill a column of a dataframe (less elegant than the previous ones!):
+        # Here is an other way to fill a column of a dataframe (less elegant
+        # than the previous ones!):
         new_column = []
         for age in data[AGE_COLUMN_NAME]:
             # age is of type datetime.timedelta (because it was
@@ -196,31 +207,32 @@ class SetOfParliamentMember:
             categ = "Under (or equal) {} years old".format(MINIMUM_MP_AGE)
             s = SetOfParliamentMember(categ)
             s.data_from_dataframe(data)
-            result = {categ : s}
+            result = {categ: s}
 
         else:
             categ1 = "Under (or equal) {} years old".format(age_split)
             categ2 = "Over {} years old".format(age_split)
-            s1, s2 = SetOfParliamentMember(categ1), SetOfParliamentMember(categ2)
+            s1, s2 = SetOfParliamentMember(
+                categ1), SetOfParliamentMember(categ2)
             condition = data[AGE_YEARS_COLUMN_NAME] <= age_split
             data1 = data[condition]
             data2 = data[~condition]
             s1.data_from_dataframe(data1)
             s2.data_from_dataframe(data2)
             result = {
-                categ1 : s1,
-                categ2 : s2
+                categ1: s1,
+                categ2: s2
             }
 
         return result
 
 
 def launch_analysis(data_file,
-                    by_party = False, info = False, displaynames = False,
-                    searchname = None, index = None, groupfirst = None, by_age = None):
+                    by_party=False, info=False, displaynames=False,
+                    searchname=None, index=None, groupfirst=None, by_age=None):
 
     sopm = SetOfParliamentMember("All MPs")
-    sopm.data_from_csv(os.path.join("data",data_file))
+    sopm.data_from_csv(os.path.join("data", data_file))
     sopm.display_chart()
 
     if by_party:
@@ -243,13 +255,13 @@ def launch_analysis(data_file,
     if index is not None:
         index = int(index)
         print()
-        pprint.pprint(sopm[index]) # prints the dict a nice way
+        pprint.pprint(sopm[index])  # prints the dict a nice way
 
     if groupfirst is not None:
         groupfirst = int(groupfirst)
         parties = sopm.split_by_political_party()
         parties = parties.values()
-        parties_by_size = sorted(parties, reverse = True)
+        parties_by_size = sorted(parties, reverse=True)
 
         print()
         print("Info: the {} biggest groups are :".format(groupfirst))
@@ -261,7 +273,8 @@ def launch_analysis(data_file,
         s.display_chart()
 
     if by_age is not None:
-        by_age = int(by_age)  # by_age was still a string, passed by the command line
+        # by_age was still a string, passed by the command line
+        by_age = int(by_age)
         for age_group, s in sopm.split_by_age(by_age).items():
             print()
             print("-" * 50)
