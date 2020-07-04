@@ -6,6 +6,8 @@ import pprint
 import datetime as dt
 
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg') # you need this if you are on MacOS
 import matplotlib.pyplot as plt
 import numpy as np
 
